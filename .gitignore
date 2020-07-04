@@ -1,0 +1,18 @@
+# IDE and other project-related stuff
+.idea/
+.pytest_cache/
+
+# Logs from driver using:
+geckodriver.log
+
+# Data files
+*.csv
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
