@@ -1,0 +1,40 @@
+from datetime import datetime, timedelta
+from faker import Faker
+
+
+class UserData(object):
+
+    def __init__(self, first_name="Nazariy", last_name="Kushnir", martial_status=1,
+                 nationality="185", birth_date="1989-10-23"):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.martial_status = martial_status
+        self.nationality = nationality
+        self.birth_date = birth_date
+
+
+class LocationData(object):
+    fake = Faker()
+
+    def __init__(self, name=fake.name(), country_code=fake.country_code(), state=fake.state(),
+                 city=fake.city(), address=fake.street_address(), zipcode=fake.postcode(),
+                 phone=fake.phone_number(), fax=fake.msisdn(), notes=fake.catch_phrase()):
+        self.name = name
+        self.country_code = country_code
+        self.state = state
+        self.city = city
+        self.address = address
+        self.zipcode = zipcode
+        self.phone = phone
+        self.fax = fax
+        self.notes = notes
+
+
+class PunchData(object):
+
+    def __init__(self):
+        self.punch_in_msg = "punch in"
+        self.punch_out_msg = "punch out"
+        self.today_date = datetime.today().strftime("%Y-%m-%d")
+        self.future_date = (datetime.today() + timedelta(weeks=1)).strftime("%Y-%m-%d")
+
