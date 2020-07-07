@@ -108,6 +108,7 @@ class TimePage(BasePage):
         return self
 
     def set_records_date(self, date: str):
+        self.wait.wait_for_visibility_by(By.ID, "attendance_date")
         self.attendance_date = self.driver.find_element(By.ID, "attendance_date")
         self.attendance_date.clear()
         self.attendance_date.send_keys(date + Keys.ENTER)
