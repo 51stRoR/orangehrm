@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from faker import Faker
+import re
 
 
 class UserData(object):
@@ -18,7 +19,7 @@ class LocationData(object):
 
     def __init__(self, name=fake.name(), country_code=fake.country_code(), state=fake.state(),
                  city=fake.city(), address=fake.street_address(), zipcode=fake.postcode(),
-                 phone=fake.phone_number(), fax=fake.msisdn(), notes=fake.catch_phrase()):
+                 phone=re.sub('[^0-9]', '', fake.phone_number()), fax=fake.msisdn(), notes=fake.catch_phrase()):
         self.name = name
         self.country_code = country_code
         self.state = state

@@ -14,7 +14,7 @@ class DashboardPage(BasePage):
 
     def to_admin_module(self):
         self.wait.wait_for_visibility(self.admin_module)
-        self.admin_module.click()
+        self.action_chains.move_to_element(self.admin_module).click().perform()
         time.sleep(2)
         return pages.admin_page.AdminPage(self.driver)
 

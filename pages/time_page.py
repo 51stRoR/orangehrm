@@ -20,8 +20,6 @@ class TimePage(BasePage):
         self.punch_time = None
         self.in_text_area = None
         self.confirm_punch_btn = None
-        self.success_message_status = False
-        self.success_message_txt = ""
         self.attendance_date = None
         self.employee_records_list = []
         self.punch_in_date_time = None
@@ -57,16 +55,10 @@ class TimePage(BasePage):
     def is_empty_record_displayed(self):
         return self.empty_record.is_displayed()
 
-    def get_success_punch_msg(self):
-        return self.success_message_txt
-
-    def is_success_punch_msg_displayed(self):
-        return self.success_message_status
-
     def to_attendance_menu(self):
         action_chains = ActionChains(self.driver)
         self.attendance_menu = self.driver.find_element(By.ID, "menu_attendance_Attendance")
-        action_chains.move_to_element(self.attendance_menu).perform()
+        action_chains.move_to_element(self.attendance_menu).click(self.attendance_menu).perform()
         self.attendance_records_menu = self.driver.find_element(By.ID, "menu_attendance_viewMyAttendanceRecord")
         self.punch_inout_menu = self.driver.find_element(By.ID, "menu_attendance_punchIn")
         return self
@@ -141,7 +133,7 @@ class TimePage(BasePage):
         self.last_record_punch_out_note = self.last_record[4].text
         return self
 
-    def check_punch_in_records_table(self, date: str):
+    def get_punch_data_from_records(self, date: str):
         return self.to_attendance_menu().to_records().set_records_date(date).get_records_table().get_last_record_data()
 
     def check_empty_records_table(self, date: str):
