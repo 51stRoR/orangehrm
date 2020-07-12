@@ -31,6 +31,12 @@ class TimePage(BasePage):
         self.last_record_punch_out_note = None
         self.empty_record = None
 
+    def init_punch_elements(self):
+        self.punch_date = self.driver.find_element(By.ID, "currentDate")
+        self.punch_time = self.driver.find_element(By.ID, "currentTime")
+        self.in_text_area = self.driver.find_element(By.XPATH, "//textarea[@id='note']")
+        self.confirm_punch_btn = self.driver.find_element(By.ID, "btnPunch")
+
     def get_punch_in_date_time(self):
         return self.punch_in_date_time
 
@@ -69,18 +75,12 @@ class TimePage(BasePage):
         return self
 
     def get_punch_in_data(self):
-        self.punch_date = self.driver.find_element(By.ID, "currentDate")
-        self.punch_time = self.driver.find_element(By.ID, "currentTime")
-        self.in_text_area = self.driver.find_element(By.XPATH, "//textarea[@id='note']")
-        self.confirm_punch_btn = self.driver.find_element(By.ID, "btnPunch")
+        self.init_punch_elements()
         self.punch_in_date_time = f"{self.punch_date.text} {self.punch_time.text}:00 GMT 2"
         return self
 
     def get_punch_out_data(self):
-        self.punch_date = self.driver.find_element(By.ID, "currentDate")
-        self.punch_time = self.driver.find_element(By.ID, "currentTime")
-        self.in_text_area = self.driver.find_element(By.XPATH, "//textarea[@id='note']")
-        self.confirm_punch_btn = self.driver.find_element(By.ID, "btnPunch")
+        self.init_punch_elements()
         self.punch_out_date_time = f"{self.punch_date.text} {self.punch_time.text}:00 GMT 2"
         return self
 

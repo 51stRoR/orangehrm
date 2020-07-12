@@ -28,6 +28,6 @@ def load_app(request):
 
 
 def pytest_generate_tests(metafunc):
-    with open('credentials.csv', 'r') as data:
+    with open('/home/nk/PycharmProjects/orangehrm/credentials.csv', 'r') as data:
         params_list = list(csv.reader(data))
     metafunc.parametrize("email, password", (tuple(params_list)))

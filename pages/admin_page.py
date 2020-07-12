@@ -19,8 +19,9 @@ class AdminPage(BasePage):
         self.country = ""
         self.result_list = []
         self.organization_menu = None
-        self.locations = None
+        self.locations_menu = None
         self.add_btn = None
+        self.delete_btn = None
         self.save_btn = None
         self.location_name = None
         self.location_country_code = None
@@ -31,19 +32,32 @@ class AdminPage(BasePage):
         self.location_phone = None
         self.location_fax = None
         self.location_notes = None
+        self.locations_list = []
+        self.location_rec_found = False
+        self.location_rec_displayed = False
+
+    def is_location_found(self):
+        return self.location_rec_found
+
+    def is_location_displayed(self):
+        return self.location_rec_displayed
 
     def to_organization_menu(self):
         action_chains = ActionChains(self.driver)
         self.organization_menu = self.driver.find_element(By.ID, "menu_admin_Organization")
-        action_chains.move_to_element_with_offset(self.organization_menu, 233, 135).click(self.organization_menu)\
+        action_chains.move_to_element_with_offset(self.organization_menu, 233, 135).click(self.organization_menu) \
             .perform()
-        self.locations = self.driver.find_element(By.ID, "menu_admin_viewLocations")
+        self.locations_menu = self.driver.find_element(By.ID, "menu_admin_viewLocations")
         return self
 
     def open_locations_menu(self):
-        self.locations.click()
+        self.locations_menu.click()
         self.wait.wait_for_visibility_by(By.ID, "frmList_ohrmListComponent")
+        self.wait.wait_for_visibility_by(By.ID, "resultTable")
         self.add_btn = self.driver.find_element(By.ID, "btnAdd")
+        self.delete_btn = self.driver.find_element(By.ID, "btnDelete")
+        self.locations_list = self.driver.find_elements(
+            By.XPATH, "//table[@id='resultTable']//tr[@class='odd' or @class='even']")
         return self
 
     def click_add_button(self):
@@ -101,26 +115,67 @@ class AdminPage(BasePage):
 
     def save_location(self):
         self.save_btn.click()
-        punch_success_message = self.driver.find_element(By.XPATH, "//div[@class='message success fadable']")
-        self.success_message_txt = punch_success_message.text
-        self.success_message_status = punch_success_message.is_displayed()
+        add_success_message = self.driver.find_element(By.XPATH, "//div[@class='message success fadable']")
+        self.success_message_txt = add_success_message.text
+        self.success_message_status = add_success_message.is_displayed()
+        return self
+
+    def click_delete_button(self):
+        self.delete_btn.click()
+        self.wait.wait_for_visibility_by(By.ID, "deleteConfModal")
+        return self
+
+    def confirm_delete(self):
+        self.driver.find_element(By.ID, "dialogDeleteBtn").click()
+        add_success_message = self.driver.find_element(By.XPATH, "//div[@class='message success fadable']")
+        self.success_message_txt = add_success_message.text
+        self.success_message_status = add_success_message.is_displayed()
         return self
 
     def add_location(self, location: data.data_classes.LocationData):
-        return self.click_add_button()\
-            .set_location_name(location.name)\
-            .select_country(location.country_code)\
-            .set_location_province(location.state)\
-            .set_location_city(location.city)\
-            .set_location_address(location.address)\
-            .set_location_zip_code(location.zipcode)\
-            .set_location_phone(location.phone)\
-            .set_location_fax(location.fax)\
-            .add_location_notes(location.notes)\
+        return self.click_add_button() \
+            .set_location_name(location.name) \
+            .select_country(location.country_code) \
+            .set_location_province(location.state) \
+            .set_location_city(location.city) \
+            .set_location_address(location.address) \
+            .set_location_zip_code(location.zipcode) \
+            .set_location_phone(location.phone) \
+            .set_location_fax(location.fax) \
+            .add_location_notes(location.notes) \
             .save_location()
 
-    def create_location(self, location: data.data_classes.LocationData):
+    def find_location_record_in_list(self, location: data.data_classes.LocationData):
+        for location_record in self.locations_list:
+            if location_record.find_element(By.XPATH, "//td[2]") == location.name and \
+                    location_record.find_element(By.XPATH, "//td[3]") == location.city and \
+                    location_record.find_element(By.XPATH, "//td[4]") == self.country and \
+                    location_record.find_element(By.XPATH, "//td[5]") == location.phone:
+                self.location_rec_found = True
+                self.location_rec_displayed = location_record.is_displayed()
+                break
+        return self
+
+    def mark_location_for_delete(self, location: data.data_classes.LocationData):
+        for location_record in self.locations_list:
+            # if location_record.find_element(By.XPATH, "//td[2]") == location.name and \
+            #         location_record.find_element(By.XPATH, "//td[3]") == location.city and \
+            #         location_record.find_element(By.XPATH, "//td[4]") == self.country and \
+            #         location_record.find_element(By.XPATH, "//td[5]") == location.phone:
+            if True:
+                location_record.find_element(By.XPATH, "//td[1]").click()
+                break
+        return self
+
+    def create_location_record(self, location: data.data_classes.LocationData):
         return self.to_organization_menu().open_locations_menu().add_location(location)
+
+    def find_location_record(self, location: data.data_classes.LocationData):
+        return self.to_organization_menu().open_locations_menu().find_location_record_in_list(location)
+
+    def delete_location_record(self, location: data.data_classes.LocationData):
+        return self.to_organization_menu().open_locations_menu().mark_location_for_delete(location)\
+            .click_delete_button().confirm_delete()
 
     # navigation part
     def to_dashboard_module(self):
