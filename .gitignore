@@ -1,6 +1,9 @@
 # IDE and other project-related stuff
 .idea/
 .pytest_cache/
+__pycache__/
+*.py[cod]
+*$py.class
 
 # Logs from driver using:
 geckodriver.log
