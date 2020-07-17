@@ -37,6 +37,6 @@ class PunchData(object):
     def __init__(self):
         self.punch_in_msg = self.fake.catch_phrase()
         self.punch_out_msg = self.fake.catch_phrase()
-        self.today_date = datetime.today().strftime("%Y-%m-%d")
+        self.punch_date = datetime.today().strftime("%Y-%m-%d")
         self.future_date = (datetime.today() + timedelta(weeks=1)).strftime("%Y-%m-%d")
 
